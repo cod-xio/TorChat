@@ -1,0 +1,231 @@
+name: Build TorChat APK
+
+on:
+  push:
+    branches: [ main, master ]   # Merge → Release
+  pull_request:
+    branches: [ main, master ]   # PR → nur Build, kein Release
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: false
+
+    steps:
+      - name: 📥 Code auschecken
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # Alle Tags laden für Versionsnummer
+
+      - name: 🧹 Doppelte Ressourcen bereinigen
+        run: |
+          find app/src/main/res/mipmap-* -name "*.xml" \
+            ! -path "*/mipmap-anydpi*" -print -delete || true
+
+      - name: ☕ JDK 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🔧 Gradle einrichten
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.3'
+
+      - name: 📦 Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: gradle-
+
+      - name: 🔧 Gradle Wrapper erzeugen
+        run: |
+          gradle wrapper --gradle-version 8.3 --distribution-type bin
+          chmod +x gradlew
+
+      - name: 🔢 Versionsnummer berechnen
+        id: version
+        run: |
+          # Letzten Tag lesen, sonst v0.0.0 als Basis
+          LAST_TAG=$(git tag --sort=-v:refname | head -n1)
+          if [ -z "$LAST_TAG" ]; then
+            LAST_TAG="v0.0.0"
+          fi
+          echo "Letzter Tag: $LAST_TAG"
+
+          # Patch-Version um 1 erhöhen (z.B. v1.2.3 → v1.2.4)
+          VERSION=${LAST_TAG#v}
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+
+          echo "Neue Version: $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "is_release=${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}" >> $GITHUB_OUTPUT
+
+      - name: 🔨 Debug APK bauen
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: 📤 APK umbenennen
+        run: |
+          VERSION=${{ steps.version.outputs.new_version }}
+          cp app/build/outputs/apk/debug/app-debug.apk \
+             app/build/outputs/apk/debug/TorChat-${VERSION}.apk
+
+      - name: 📤 APK als Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorChat-${{ steps.version.outputs.new_version }}-APK
+          path: app/build/outputs/apk/debug/TorChat-${{ steps.version.outputs.new_version }}.apk
+          retention-days: 30
+
+      - name: 🏷️ Tag erstellen & pushen
+        if: steps.version.outputs.is_release == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.version.outputs.new_version }}
+          git push origin ${{ steps.version.outputs.new_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🚀 GitHub Release erstellen
+        if: steps.version.outputs.is_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.new_version }}
+          name: "🧅 TorChat ${{ steps.version.outputs.new_version }}"
+          body: |
+            ## 🧅 TorChat ${{ steps.version.outputs.new_version }}
+            Dezentraler P2P Messenger – kein Server, keine Telefonnummer, kein Tracking.
+
+            ### 📲 Installation
+            1. **`TorChat.apk`** herunterladen
+            2. Auf Android übertragen & installieren
+            3. `Einstellungen → Sicherheit → Unbekannte Quellen → EIN`
+
+            ### ✨ Features
+            - 🔒 Ende-zu-Ende verschlüsselt (AES-256-GCM + RSA-2048)
+            - 🧅 **Eingebettetes Tor** – kein Orbot nötig!
+            - 📱 Foto & Sprachnachrichten
+            - 🔑 PIN-Schutz
+            - 👤 Anzeigename konfigurierbar
+
+            > Commit: `${{ github.sha }}`
+          files: app/build/outputs/apk/debug/TorChat-${{ steps.version.outputs.new_version }}.apk
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✅ Ergebnis
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          if [ "${{ steps.version.outputs.is_release }}" == "true" ]; then
+            echo "✅ Release ${{ steps.version.outputs.new_version }} erstellt!"
+            echo "🔗 https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.new_version }}"
+          else
+            echo "✅ Build erfolgreich (PR – kein Release)"
+          fi
+          echo "📦 $(du -sh app/build/outputs/apk/debug/TorChat-${{ steps.version.outputs.new_version }}.apk)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: 📥 Code auschecken
+        uses: actions/checkout@v4
+
+      - name: 🧹 Doppelte Ressourcen bereinigen
+        run: |
+          find app/src/main/res/mipmap-* -name "*.xml" \
+            ! -path "*/mipmap-anydpi*" -print -delete || true
+
+      - name: ☕ JDK 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🔧 Gradle einrichten
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.3'
+
+      - name: 📦 Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: gradle-
+
+      - name: 🔧 Gradle Wrapper erzeugen
+        run: |
+          gradle wrapper --gradle-version 8.3 --distribution-type bin
+          chmod +x gradlew
+
+      - name: 🔨 Debug APK bauen
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: 📤 APK als Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorChat-Debug-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: 🚀 GitHub Release erstellen
+        # Release NUR wenn ein Tag gepusht wird (z.B. v1.0, v2.0, v1.2.3)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "🧅 TorChat ${{ github.ref_name }}"
+          body: |
+            ## 🧅 TorChat ${{ github.ref_name }}
+            Dezentraler P2P Messenger – kein Server, keine Telefonnummer, kein Tracking.
+
+            ### 📲 Installation
+            1. **`TorChat.apk`** herunterladen
+            2. Auf Android übertragen & installieren
+            3. `Einstellungen → Sicherheit → Unbekannte Quellen → EIN`
+
+            ### ✨ Features
+            - 🔒 Ende-zu-Ende verschlüsselt (AES-256-GCM + RSA-2048)
+            - 🧅 **Eingebettetes Tor** – kein Orbot nötig!
+            - 📱 Foto & Sprachnachrichten
+            - 🔑 PIN-Schutz
+            - 👤 Anzeigename konfigurierbar
+
+            > Commit: `${{ github.sha }}`
+          files: app/build/outputs/apk/debug/app-debug.apk
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✅ Ergebnis
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "✅ TorChat APK gebaut & Release ${{ github.ref_name }} erstellt!"
+            echo "🔗 https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          else
+            echo "✅ TorChat APK gebaut (kein Release — kein Tag)"
+          fi
+          echo "📦 $(du -sh app/build/outputs/apk/debug/app-debug.apk)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
