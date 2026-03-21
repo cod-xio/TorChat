@@ -1,0 +1,137 @@
+TorChat Lizenz (TCL-1.0)
+Copyright (c) 2025 TorChat Contributors
+
+═══════════════════════════════════════════════════════════════════
+                    TORCHAT FREIE LIZENZ v1.0
+═══════════════════════════════════════════════════════════════════
+
+PRÄAMBEL
+
+Diese Lizenz gewährt dir weitreichende Freiheiten zur Nutzung,
+Veränderung und Weitergabe dieser Software – mit einer einzigen
+wesentlichen Einschränkung: TorChat und alle darauf basierenden
+Werke dürfen NIEMALS gegen Entgelt verkauft werden.
+
+Software soll frei bleiben. Immer.
+
+───────────────────────────────────────────────────────────────────
+§ 1 – GEWÄHRTE RECHTE
+───────────────────────────────────────────────────────────────────
+
+Dir werden hiermit folgende Rechte kostenfrei und unwiderruflich
+gewährt:
+
+  (a) NUTZUNG
+      Du darfst diese Software für jeden Zweck nutzen – privat,
+      gewerblich, akademisch oder gemeinnützig.
+
+  (b) KOPIEREN
+      Du darfst beliebig viele Kopien dieser Software erstellen
+      und verteilen.
+
+  (c) VERÄNDERN
+      Du darfst den Quellcode nach Belieben verändern, verbessern,
+      erweitern oder anpassen.
+
+  (d) WEITERGEBEN
+      Du darfst den Original- oder veränderten Code sowie kompilierte
+      Versionen (APK, Binärdateien) weitergeben – unter den
+      Bedingungen dieser Lizenz.
+
+  (e) EINBINDEN
+      Du darfst Teile dieses Codes in eigene Projekte einbinden,
+      sofern das Gesamtprojekt ebenfalls unter dieser Lizenz oder
+      einer gleichwertigen Copyleft-Lizenz steht.
+
+───────────────────────────────────────────────────────────────────
+§ 2 – VERBOTE (NICHT KOMMERZIELLER VERKAUF)
+───────────────────────────────────────────────────────────────────
+
+Folgendes ist AUSDRÜCKLICH VERBOTEN:
+
+  ✗  Der Verkauf dieser Software oder abgeleiteter Werke gegen
+     Geld, Kryptowährung, Tausch oder jede andere Form von
+     geldwertem Vorteil.
+
+  ✗  Das Einstellen dieser Software oder abgeleiteter Werke in
+     App-Stores, Marktplätze oder Plattformen, auf denen Nutzer
+     für den Download oder die Nutzung zahlen müssen.
+
+  ✗  Das Anbieten kostenpflichtiger Abonnements, In-App-Käufe
+     oder Premium-Versionen, die auf diesem Code basieren.
+
+  ✗  Das Verkaufen von Lizenzen für diesen Code oder abgeleitete
+     Werke.
+
+  ✗  Das Weiterverkaufen des kompilierten Programms (APK oder
+     andere Binärformate) gegen Entgelt.
+
+KLARSTELLUNG: Du darfst Dienstleistungen RUND UM diese Software
+anbieten (z. B. Installation, Support, Anpassung) – jedoch nicht
+die Software selbst oder das fertige Programm verkaufen.
+
+───────────────────────────────────────────────────────────────────
+§ 3 – COPYLEFT-PFLICHT
+───────────────────────────────────────────────────────────────────
+
+Wenn du diese Software veränderst und weitergibst, gilt:
+
+  (a) Dein abgeleitetes Werk muss unter dieser Lizenz (TCL-1.0)
+      oder einer kompatiblen Lizenz veröffentlicht werden.
+
+  (b) Der vollständige Quellcode muss öffentlich zugänglich sein –
+      spätestens zum Zeitpunkt der Weitergabe des kompilierten
+      Programms.
+
+  (c) Diese Lizenzdatei muss unverändert beigefügt werden.
+
+  (d) Alle Änderungen müssen klar als solche gekennzeichnet sein,
+      mit Datum und einer kurzen Beschreibung.
+
+───────────────────────────────────────────────────────────────────
+§ 4 – NAMENSNENNUNG
+───────────────────────────────────────────────────────────────────
+
+Bei Weitergabe oder Veröffentlichung abgeleiteter Werke muss
+sichtbar angegeben werden:
+
+      „Basiert auf TorChat (https://github.com/[REPO])
+       Lizenziert unter der TorChat Freien Lizenz v1.0"
+
+───────────────────────────────────────────────────────────────────
+§ 5 – HAFTUNGSAUSSCHLUSS
+───────────────────────────────────────────────────────────────────
+
+DIESE SOFTWARE WIRD OHNE JEGLICHE GEWÄHRLEISTUNG BEREITGESTELLT,
+WEDER AUSDRÜCKLICH NOCH STILLSCHWEIGEND.
+
+DIE AUTOREN HAFTEN NICHT FÜR SCHÄDEN JEGLICHER ART, DIE AUS DER
+NUTZUNG DIESER SOFTWARE ENTSTEHEN – EINSCHLIESSLICH, ABER NICHT
+BESCHRÄNKT AUF DATENVERLUST, SYSTEMAUSFÄLLE ODER SICHERHEITS-
+VORFÄLLE.
+
+DIE NUTZUNG ERFOLGT AUF EIGENE VERANTWORTUNG.
+
+───────────────────────────────────────────────────────────────────
+§ 6 – SONSTIGES
+───────────────────────────────────────────────────────────────────
+
+  • Sollte eine Bestimmung dieser Lizenz unwirksam sein, bleiben
+    die übrigen Bestimmungen in Kraft.
+
+  • Diese Lizenz gilt für alle zukünftigen Versionen dieser
+    Software, sofern nicht ausdrücklich anders angegeben.
+
+  • Im Streitfall gilt deutsches Recht.
+
+───────────────────────────────────────────────────────────────────
+
+KURZFASSUNG:
+  ✓  Nutzen          – erlaubt
+  ✓  Kopieren        – erlaubt
+  ✓  Verändern       – erlaubt
+  ✓  Kostenlos teilen – erlaubt
+  ✗  Verkaufen       – VERBOTEN
+  ✗  Bezahlschranken – VERBOTEN
+
+───────────────────────────────────────────────────────────────────
