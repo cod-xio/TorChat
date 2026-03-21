@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="camera_photos" path="camera/" />
+    <cache-path name="audio_records" path="audio/" />
+    <external-cache-path name="external_cache" path="." />
+</paths>
