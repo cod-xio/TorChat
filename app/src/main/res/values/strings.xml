@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TorChat</string>
+    <string name="notification_message_title">Neue verschlüsselte Nachricht</string>
+    <string name="notification_service">TorChat Hintergrunddienst</string>
+    <string name="tor_connected">Tor verbunden</string>
+    <string name="tor_disconnected">Tor nicht verbunden – Orbot öffnen</string>
+    <string name="encryption_notice">Ende-zu-Ende verschlüsselt via Tor</string>
+</resources>
